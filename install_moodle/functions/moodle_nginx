@@ -1,0 +1,173 @@
+### MOODLE NGINX ####
+# KHAI BAO BIEN CHO ROOT DIRECTORY WEB SERVER
+WEB_ROOT_DIRECTORY=/var/www
+
+##### LUA CHON PHIEN BAN MOODLE VA PHP TUONG UNG
+echo -e "${LIGHT_GREEN}############################################## ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}####  DOWNLOAD MOODLE PHIEN BAN STABLE  ###### ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}############################################## ${ENDCOLOR}"
+
+## chon version Moodle
+echo -e "${LIGHT_GREEN} ### CHON VERSION MOODLE ##### ${ENDCOLOR}"
+echo -e "${YELLOW}   1) MOODLE_39_STABLE yeu cau PHP 7.2 den 7.4 ${ENDCOLOR}"
+echo -e "${YELLOW}   2) MOODLE_311_STABLE yeu cau PHP 7.3 den 8.0 ${ENDCOLOR}"
+echo -e "${YELLOW}   3) MOODLE_400_STABLE yeu cau PHP 7.3 den 8.0 ${ENDCOLOR}"
+echo -e "${YELLOW}   4) MOODLE_401_STABLE yeu cau PHP 7.4 den 8.1 ${ENDCOLOR}"
+echo -e "${YELLOW}   5) MOODLE_402_STABLE yeu cau PHP 8.0 den 8.3 ${ENDCOLOR}"
+#
+read -p "$(echo -e ${LIGHT_GREEN}" NHAP SO THU TU PHIEN BAN MOODLE MUON CAI DAT:  "$ENDCOLOR)" INSTALL_CHOICE
+case $INSTALL_CHOICE in
+  1) MOODLE_VERSION=39 && PHP_VERSION=7.4;;
+  2) MOODLE_VERSION=311 && PHP_VERSION=7.4;;
+  3) MOODLE_VERSION=400 && PHP_VERSION=7.4;;
+  4) MOODLE_VERSION=401 && PHP_VERSION=7.4;;
+  5) MOODLE_VERSION=402 && PHP_VERSION=8.2;;  
+  *) echo "invalid option";;
+esac
+##### END LUA CHON PHIEN BAN MOODLE VA PHP TUONG UNG
+
+# KHAI BAO TEN MIEN
+echo -e "${LIGHT_GREEN} #### KHAI BAO TEN MIEN #### ${ENDCOLOR}"
+read -rp "$(echo -e ${YELLOW}" NHAP DOMAIN: "$ENDCOLOR)" DOMAIN_NAME
+# END KHAI BAO TEN MIEN
+
+### TAO DATABASE CHO MOODLE ####
+echo -e "${LIGHT_GREEN}######################### ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}####  TAO DATABASE ###### ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}######################### ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN} ####  NHAP CAC THONG TIN DATABASE NAME, USER VA PASSWORD  #### ${ENDCOLOR}"
+#read -rp 'DATABASE NAME: ' DB_NAME
+read -rp "$(echo -e ${YELLOW}" DATABASE NAME: "$ENDCOLOR)" DB_NAME
+echo " "
+#read -rp 'DATABASE USER: ' DB_USER	
+read -rp "$(echo -e ${YELLOW}" DATABASE USER: "$ENDCOLOR)" DB_USER	
+echo " "
+#read -sp 'DATABASE PASSS: ' DB_PASS
+read -sp "$(echo -e ${YELLOW}" Nhap DATABASE PASS: "$ENDCOLOR)" DB_PASS		
+echo " "
+### END TAO DATABASE CHO MOODLE ####
+
+# Cai dat DATABASE
+# Kiểm tra service mariadb nếu có thì cài đặt nếu có rồi thì không cài đặt
+service_db="mariadb"
+if systemctl is-active --quiet "$service_db.service" ; then
+  echo -e "${YELLOW} $service_db dang hoat dong ${ENDCOLOR}"
+  source functions/mariadb/fn_create_database
+else
+  echo -e "${YELLOW} Nhap mat khau muon dat cho user root va sysadmin cua MARIADB ${ENDCOLOR}"
+  read -sp "$(echo -e ${YELLOW}" Password root va sysdba cua Mariadb:  "$ENDCOLOR)" DB_ROOT_PASS
+  systemctl start mariadb
+  source functions/mariadb/fn_create_database
+fi
+### END TAO DATABASE CHO MOODLE ####
+
+# CAI DAT NGINX
+# Ham tao file cau hinh virtual host theo domain
+f_create_virtual_host () {
+	# tao file config cho domain
+	echo "
+server {
+	listen 80;
+	listen [::]:80;
+	root $WEB_ROOT_DIRECTORY/$DOMAIN_NAME/moodle/;
+	
+	index  index.php index.html index.htm;
+	server_name  $DOMAIN_NAME;
+	
+	access_log /var/log/nginx/$DOMAIN_NAME/access.log vhost;
+	error_log /var/log/nginx/$DOMAIN_NAME/error.log;
+
+	set_real_ip_from 10.1.18.18;
+	set_real_ip_from 10.1.18.19;
+
+	client_max_body_size 100M;
+	autoindex off;
+	location / {
+		try_files \$uri \$uri/ =404;
+	}
+	location /dataroot/ {
+	  internal;
+	  alias /$DOMAIN_NAME/moodledata/;
+	}
+
+	location ~ [^/].php(/|$) {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass unix:/run/php/php${PHP_VERSION}-fpm.sock;
+		fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+		include fastcgi_params;
+	}
+}
+	" > /etc/nginx/conf.d/$DOMAIN_NAME.conf
+}
+# end Ham tao file cau hinh virtual host theo domain
+
+# Kiểm tra service mariadb nếu có thì cài đặt nếu có rồi thì không cài đặt
+service_web="nginx"
+if systemctl is-active --quiet "$service_web.service" ; then
+  echo -e "${YELLOW} $service_web dang hoat dong ${ENDCOLOR}"
+  f_create_virtual_host
+else
+  systemctl start nginx
+  f_create_virtual_host
+fi
+
+
+# Ham download moodle va gan bien PHP cho dung phien ban
+# DOWNLOAD MOODLE
+f_download_moodle () {
+	# chuyen vao thu muc root cua domain
+	#cd $WEB_ROOT_DIRECTORY/$DOMAIN_NAME
+	# download moodle
+	wget https://packaging.moodle.org/stable${MOODLE_VERSION}/moodle-latest-${MOODLE_VERSION}.zip
+	mv moodle-latest-${MOODLE_VERSION}.zip $WEB_ROOT_DIRECTORY/$DOMAIN_NAME/
+	unzip $WEB_ROOT_DIRECTORY/$DOMAIN_NAME/moodle-latest-${MOODLE_VERSION}.zip -d $WEB_ROOT_DIRECTORY/$DOMAIN_NAME/
+	chown -R www-data.www-data $WEB_ROOT_DIRECTORY/$DOMAIN_NAME
+}
+
+
+
+# Kiem tra WEB_ROOT_DIRECTORY da co san chua, neu chua co thi se tao thu muc, neu co roi thi in ra man hinh directory exists
+if [ ! -d "$WEB_ROOT_DIRECTORY" ];
+then
+	mkdir $WEB_ROOT_DIRECTORY
+else
+	echo "$WEB_ROOT_DIRECTORY directory exists."
+fi
+
+
+echo "$WEB_ROOT_DIRECTORY"
+echo "$DOMAIN_NAME"
+echo "$PHP_VERSION"
+sleep 3
+
+# tao thu muc cho domain
+mkdir $WEB_ROOT_DIRECTORY/$DOMAIN_NAME
+chown -R www-data.www-data $WEB_ROOT_DIRECTORY/$DOMAIN_NAME
+chmod -R 755 $WEB_ROOT_DIRECTORY/$DOMAIN_NAME
+mkdir /var/log/nginx/$DOMAIN_NAME
+chown -R www-data.www-data /var/log/nginx/
+
+# goi ham download moodle 
+f_download_moodle
+
+# goi ham tao virtual host
+f_create_virtual_host
+
+# reload lai nginx
+systemctl reload nginx
+
+# THONG TIN SAU KHI CAI DAT
+echo -e "${LIGHT_GREEN}########################################## ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}####  CAC THONG TIN SAU KHI CAI DAT  ##### ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}########################################## ${ENDCOLOR}"
+echo -e "${YELLOW} Web root directory:${ENDCOLOR} $WEB_ROOT_DIRECTORY "
+echo -e "${YELLOW} Thu muc Source code moodle:${ENDCOLOR} $WEB_ROOT_DIRECTORY/$DOMAIN_NAME/moodle"
+echo -e "${YELLOW} Thu muc moodledata:${ENDCOLOR} $WEB_ROOT_DIRECTORY/$DOMAIN_NAME/moodledata"
+echo -e "${YELLOW} Database name:${ENDCOLOR} $DB_NAME"
+echo -e "${YELLOW} User name Database:${ENDCOLOR} $DB_USER"
+echo -e "${YELLOW} Pasword User Database:${ENDCOLOR} $DB_PASS"
+echo -e "${YELLOW} Url Moodle:${ENDCOLOR} http://$DOMAIN_NAME"
+echo -e "${YELLOW} PHP Version:${ENDCOLOR} $PHP_VERSION"
+
+# Menu lua chon thoat khoi chuong trinh hay tiep tuc chuong trinh
+source functions/99_back_main_menu

@@ -1,0 +1,9 @@
+echo -e "${LIGHT_GREEN}############################################## ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}####  CAI DAT NGINX TREN UBUNTU 22.04 ###### ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}############################################## ${ENDCOLOR}"
+
+# Goi function cai dat nginx
+source functions/nginx/fn_install_nginx
+
+# Thoat ve menu Nginx
+source functions/nginx/99_exit_menu

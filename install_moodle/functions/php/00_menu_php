@@ -1,0 +1,27 @@
+# INSTALL PHP
+echo -e "${LIGHT_GREEN}########################## ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}### CHON VERSION PHP ##### ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}########################## ${ENDCOLOR}"
+echo -e "${YELLOW}   1) PHP 7.4 ${ENDCOLOR}"
+echo -e "${YELLOW}   2) PHP 8.0 ${ENDCOLOR}"
+echo -e "${YELLOW}   3) PHP 8.1 ${ENDCOLOR}"
+echo -e "${YELLOW}   4) PHP 8.2 ${ENDCOLOR}"
+echo -e "${YELLOW}   5) PHP 8.3 ${ENDCOLOR}"
+echo -e "${YELLOW}   6) CAI DAT TAT CA PHIEN BAN TREN ${ENDCOLOR}"
+echo -e "${YELLOW}   7) CHON PHIEN BAN MAC DINH ${ENDCOLOR}"
+echo -e "${YELLOW}   99) EXIT MENU ${ENDCOLOR}"
+
+
+read -p "$(echo -e ${LIGHT_GREEN}" NHAP SO THU TU PHIEN BAN PHP:  "$ENDCOLOR)" INSTALL_CHOICE
+case $INSTALL_CHOICE in
+  1) PHP_VERSION=7.4 ; source functions/php/01_install_php;;
+  2) PHP_VERSION=8.0 ; source functions/php/01_install_php;;
+  3) PHP_VERSION=8.1 ; source functions/php/01_install_php;;
+  4) PHP_VERSION=8.2 ; source functions/php/01_install_php;;
+  5) PHP_VERSION=8.3 ; source functions/php/01_install_php;;  
+  6) source functions/php/02_all_version;;
+  7) source functions/php/03_set_default_php;;  
+  99) source functions/php/99_exit_menu;;  
+  *) echo "invalid option";;
+esac
+

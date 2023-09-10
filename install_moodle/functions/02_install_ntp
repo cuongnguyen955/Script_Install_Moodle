@@ -1,0 +1,34 @@
+### Install NTP on Ubuntu 22.04 ###
+echo -e "${LIGHT_GREEN}###################################################### ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}####  CAI DAT VA CAU HINH NTP TREN UBUNTU 22.04 ###### ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}###################################################### ${ENDCOLOR}"
+sudo apt install ntp ntpdate -y
+sudo rm -f /etc/localtime
+sudo ln -s /usr/share/zoneinfo/Asia/Ho_Chi_Minh /etc/localtime
+
+echo -e "${LIGHT_GREEN}####  NHAP DIA CHI NTP SERVER  ###### ${ENDCOLOR}"
+# tham so -sp se khong hien thi ky tu khi nhap (dung cho nhap mat khau), tham so -rp hien thi thong tin, dung de khai bao cac tham so
+#read -rp 'Nhap dia chi NTP Server: ' NTP_SERVER
+read -rp "$(echo -e ${YELLOW}" NHAP DIA CHI NTP SERVER: "$ENDCOLOR)" NTP_SERVER
+
+# thay doi cacthong tin can thiet
+sudo sed -i 's/pool 0.ubuntu.pool.ntp.org iburst/pool $NTP_SERVER iburst/' /etc/ntp.conf
+sudo sed -i 's/pool 1.ubuntu.pool.ntp.org iburst/#pool 1.vn.pool.ntp.org iburst/' /etc/ntp.conf
+sudo sed -i 's/pool 2.ubuntu.pool.ntp.org iburst/#pool 2.vn.pool.ntp.org iburst/' /etc/ntp.conf
+sudo sed -i 's/pool 3.ubuntu.pool.ntp.org iburst/#pool 3.vn.pool.ntp.org iburst/' /etc/ntp.conf
+sudo sed -i 's/pool ntp.ubuntu.com/#pool ntp.ubuntu.com/' /etc/ntp.conf
+
+sudo systemctl restart ntp
+sudo systemctl enable ntp
+
+echo -e "${LIGHT_BLUE}####  UPDATE NTP CLIENT  ###### ${ENDCOLOR}"
+ntpdate -q $NTP_SERVER
+echo ""
+echo -e "${LIGHT_BLUE}####  KIEM TRA TRANG THAI DICH VU NTP  ###### ${ENDCOLOR}"
+sudo systemctl is-active ntp
+echo " "
+echo -e "${LIGHT_BLUE}####  KIEM TRA NGAY GIO SAU KHI UPDATE NTP  ###### ${ENDCOLOR}"
+date
+
+# Menu lua chon thoat khoi chuong trinh hay tiep tuc chuong trinh
+source functions/99_back_main_menu

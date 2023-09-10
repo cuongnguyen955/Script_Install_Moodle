@@ -1,0 +1,31 @@
+# MARIADB MANAGEMENT
+echo -e "${LIGHT_GREEN}############################################ ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}### CHON THAO TAC CAN DUNG VOI MARIADB ##### ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}############################################ ${ENDCOLOR}"
+echo -e "${YELLOW}   1) CAI DAT MARIADB ${ENDCOLOR}"
+echo -e "${YELLOW}   2) TAO DATABASE va USER TUONG UNG ${ENDCOLOR}"
+echo -e "${YELLOW}   3) XOA DATABASE ${ENDCOLOR}"
+echo -e "${YELLOW}   4) KIEM TRA CAC DATABASE DANG CO ${ENDCOLOR}"
+echo -e "${YELLOW}   5) KIEM TRA CAC USER SO HUU DATABASE NAO ${ENDCOLOR}"
+echo -e "${YELLOW}   6) LIET KE CAC USER TRONG DATABASE ${ENDCOLOR}"
+echo -e "${YELLOW}   7) TAO USER TRONG DATABASE ${ENDCOLOR}"
+echo -e "${YELLOW}   8) GAN USER VAO DATABASE ${ENDCOLOR}"
+echo -e "${YELLOW}   9) XOA USER DATABASE ${ENDCOLOR}"
+echo -e "${YELLOW}   10) DOI MAT KHAU USER DATABASE ${ENDCOLOR}"
+echo -e "${YELLOW}   99) EXIT MENU ${ENDCOLOR}"
+
+read -p "$(echo -e ${LIGHT_GREEN}" NHAP SO THU TU CUA THAO TAC CAN DUNG:  "$ENDCOLOR)" INSTALL_CHOICE
+case $INSTALL_CHOICE in
+  1) source functions/mariadb/01_install_mariadb;;
+  2) source functions/mariadb/02_create_database;;
+  3) source functions/mariadb/03_delete_database;;
+  4) source functions/mariadb/04_show_databases;;
+  5) source functions/mariadb/05_show_users_grant_database;;  
+  6) source functions/mariadb/06_list_user;;
+  7) source functions/mariadb/07_create_user;;
+  8) source functions/mariadb/08_grant_user_to_db;;
+  9) source functions/mariadb/09_delete_user;;  
+  10) source functions/mariadb/10_change_pass_user;; 
+  99) ././menu.sh;;
+  *) echo "invalid option";;
+esac

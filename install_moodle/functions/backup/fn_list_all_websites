@@ -1,0 +1,13 @@
+#!/bin/bash
+# HIEN THI CAC WEBSITES DANG CHAY TREN SERVER
+#GIAI THICH LENH
+# cat /etc/nginx/conf.d/*.conf --> doc tat ca cac file cau hinh vhost cua nginx
+# grep server_name ---> DUNG LENH grep server_name de loc ra cac dong co tu server_name (out put se la :         server_name  site1.local;) trong do site1.local; ten website, output co 2 truong (truong thu 1 ($1) la server_name - truong thu 2 ($2) la site1.local;)
+# awk '{print $2}' ----> nhan dau vao cua lenh grep sau do chi xuat output ra truong thu 2 la site1.local;
+# perl -pe "s/[\;]//g"  de loai bo cac ky tu ; o cuoi cua sitel.local; de chi con hien thi ten cua website la site1.local cac ky tu can loai bo nam trong cap dau [], phan cach moi ky tu bang dau \
+
+LIST_DOMAIN=$(cat /etc/nginx/conf.d/*.conf | grep server_name | awk '{print $2}' | perl -pe "s/[\;]//g")
+for VALUE in "${LIST_DOMAIN}"; do 
+  echo "${VALUE}"
+done
+

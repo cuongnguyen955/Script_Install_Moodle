@@ -1,0 +1,38 @@
+sudo apt install mariadb-server mariadb-client -y
+sudo apt -y install libmariadb-java
+sudo mysql_secure_installation <<EOF
+
+y
+y
+$DB_ROOT_PASS
+$DB_ROOT_PASS
+y
+y
+y
+y
+EOF
+
+sudo ufw allow 3306/tcp comment "allow access Mariadb"
+
+sudo systemctl start mariadb
+sudo systemctl enable mariadb
+
+sudo mysql -e "grant all on *.* to sysdba@'localhost' identified by '$DB_ROOT_PASS';"
+sudo mysql -e "grant all on *.* to sysdba@'%' identified by '$DB_ROOT_PASS'"
+sudo mysql -e "flush privileges;"
+
+# cho phep remote truy cap vao MARIADB
+sudo sed -i 's/bind-address            = 127.0.0.1/bind-address            = 0.0.0.0/' /etc/mysql/mariadb.conf.d/50-server.cnf
+
+sudo systemctl restart mariadb
+
+echo -e "${LIGHT_BLUE}###  CHECK STATUS MARIADB  #### ${ENDCOLOR}"
+sudo systemctl is-active mariadb
+echo " "
+echo -e "${LIGHT_BLUE}###  SHOW DATABASES  ### ${ENDCOLOR}"
+sudo mysql -e "SHOW DATABASES;"
+echo " "
+echo -e "${LIGHT_BLUE}###  CHECK USERS SQL  ### ${ENDCOLOR}"
+echo "CHECK USERS SQL"
+sudo mysql -e "SELECT host, user, password from mysql.user;"
+echo " "

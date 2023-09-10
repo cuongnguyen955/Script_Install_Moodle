@@ -1,0 +1,17 @@
+# MENU NGINX
+echo -e "${LIGHT_GREEN}########################################## ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}### CHON THAO TAC CAN DUNG VOI NGINX ##### ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}########################################## ${ENDCOLOR}"
+echo -e "${YELLOW}   1) CAI DAT NGINX ${ENDCOLOR}"
+echo -e "${YELLOW}   2) TAO VIRTUAL HOST ${ENDCOLOR}"
+echo -e "${YELLOW}   3) HIEN THI CAC WEBSITE DANG HOAT DONG ${ENDCOLOR}"
+echo -e "${YELLOW}   99) EXIT MENU ${ENDCOLOR}"
+
+read -p "$(echo -e ${LIGHT_GREEN}" NHAP SO THU TU CUA THAO TAC CAN DUNG:  "$ENDCOLOR)" INSTALL_CHOICE
+case $INSTALL_CHOICE in
+  1) source functions/nginx/01_install_nginx;;
+  2) source functions/nginx/02_create_virtual_host;;
+  2) source functions/nginx/03_list_all_websites;;
+  99) ././menu.sh;;
+  *) echo "invalid option";;
+esac

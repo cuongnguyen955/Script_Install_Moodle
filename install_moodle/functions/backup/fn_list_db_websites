@@ -1,0 +1,13 @@
+#GIAI THICH LENH
+# cat /var/www/site1.local/moodle/config.php --> DOC FILE CAU HINH config.php
+# grep dbname ---> DUNG LENH grep dbname de loc ra cac dong co tu khoa dbname (out put se la : $CFG->dbname    = 'site1';) trong do site1 la db name, output co 3 truong (truong thu 1 ($1) la $CFG->dbname) - truong thu 2 ($2) la dau = - truong thu 3 ($3) la 'site1';)
+# awk '{print $3}' ----> nhan dau vao cua lenh grep sau do chi xuat output ra truong thu 3 la 'site1';
+# perl -pe "s/[\'\;]//g"  de loai bo cac ky tu ' ; cua 'site1'; de chi con hien thi ten cua dbname la site1 Cac ky tu can loai bo nam trong cap dau [], phan cach moi ky tu bang dau \ 
+# GET_DB_NAME=$(cat /var/www/site1.local/moodle/config.php | grep dbname | awk '{print $3}' |perl -pe "s/[\'\;]//g")
+
+
+GET_DB_NAME=$(cat /var/www/${DOMAINS_NAME}/moodle/config.php | grep dbname | awk '{print $3}' |perl -pe "s/[\'\;]//g")
+for VALUE in "${GET_DB_NAME}"; do
+  echo "${VALUE}"
+done
+

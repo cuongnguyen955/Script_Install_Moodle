@@ -1,0 +1,86 @@
+# INSTALL PHP 7.4
+
+### Tat Deamons using outdated libraries
+sudo sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/g' /etc/needrestart/needrestart.conf
+### tat Pending kernel upgrade
+sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf
+### update va upgrade he dieu hanh
+sudo apt update && sudo apt upgrade -y
+sudo apt autoremove -y
+
+### them Ondrej PPA Repository vao Ubuntu 22.04
+sudo apt install software-properties-common
+sudo add-apt-repository ppa:ondrej/php -y
+sudo apt update -y
+
+f_install_php () {
+	echo -e "${LIGHT_GREEN}#################################################### ${ENDCOLOR}"
+	echo -e "${LIGHT_GREEN}### Install PHP ${PHP_VERSION} on Ubuntu 22.04 ##### ${ENDCOLOR}"
+	echo -e "${LIGHT_GREEN}#################################################### ${ENDCOLOR}"
+	sudo apt install -y php${PHP_VERSION} php${PHP_VERSION}-fpm php${PHP_VERSION}-curl php${PHP_VERSION}-cli php${PHP_VERSION}-mysql php${PHP_VERSION}-gd php${PHP_VERSION}-common php${PHP_VERSION}-xml php${PHP_VERSION}-intl  php${PHP_VERSION}-dev php${PHP_VERSION}-zip php${PHP_VERSION}-soap php${PHP_VERSION}-bz2 php${PHP_VERSION}-bcmath php${PHP_VERSION}-gmp php${PHP_VERSION}-ldap php${PHP_VERSION}-mbstring php${PHP_VERSION}-gmp php${PHP_VERSION}-bcmath 
+
+	apt install -y php${PHP_VERSION}-json
+    apt install -y php${PHP_VERSION}-imagick
+    apt install -y php${PHP_VERSION}-apcu
+    apt install -y php${PHP_VERSION}-redis
+  
+	systemctl enable php${PHP_VERSION}-fpm
+	systemctl start php${PHP_VERSION}-fpm
+
+	### PHP SETTING
+	# tim mui gio php : http://php.net/manual/en/timezones.php
+	sudo sed -i 's/;date.timezone =/date.timezone = Asia\/Ho_Chi_Minh/' /etc/php/${PHP_VERSION}/fpm/php.ini
+	sudo sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/' /etc/php/${PHP_VERSION}/fpm/php.ini
+	# Gioi han tai nguyen
+	sudo sed -i 's/max_execution_time = 30/max_execution_time = 3600/' /etc/php/${PHP_VERSION}/fpm/php.ini
+	sudo sed -i 's/max_input_time = 60/max_input_time = 120/' /etc/php/${PHP_VERSION}/fpm/php.ini
+	sudo sed -i 's/;max_input_vars = 1000/max_input_vars = 5000/' /etc/php/${PHP_VERSION}/fpm/php.ini
+
+	## Data Handling
+	# Mac dinh : post_max_size = 8M
+	sudo sed -i 's/post_max_size = 8M/post_max_size = 512M/' /etc/php/${PHP_VERSION}/fpm/php.ini
+	# file upload
+	# Mac dinh : file_uploads = On
+	# Mac dinh : ;upload_tmp_dir =
+	sudo sed -i 's/;upload_tmp_dir =/upload_tmp_dir = /tmp//' /etc/php/${PHP_VERSION}/fpm/php.ini
+	# Mac dinh : upload_max_filesize = 2M
+	sudo sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 512M/' /etc/php/${PHP_VERSION}/fpm/php.ini
+	# Mac dinh : max_file_uploads = 20
+	# Mac dinh : allow_url_fopen = On
+	# Mac dinh : allow_url_include = Off
+
+	## uncomment cac tham so duoi trong file /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
+	#;env[HOSTNAME] = $HOSTNAME
+	#;env[PATH] = /usr/local/bin:/usr/bin:/bin
+	#;env[TMP] = /tmp
+	#;env[TMPDIR] = /tmp
+	#;env[TEMP] = /tmp
+
+
+	sudo sed -i 's/;env\[HOSTNAME\] = \$HOSTNAME/env\[HOSTNAME\] = \$HOSTNAME/' /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
+	sudo sed -i 's/;env\[PATH\] = \/usr\/local\/bin\:\/usr\/bin\:\/bin/env\[PATH\] = \/usr\/local\/bin\:\/usr\/bin\:\/bin/' /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
+	sudo sed -i 's/;env\[TMP\] = \/tmp/env\[TMP\] = \/tmp/' /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
+	sudo sed -i 's/;env\[TMPDIR\] = \/tmp/env\[TMPDIR\] = \/tmp/' /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
+	sudo sed -i 's/;env\[TEMP\] = \/tmp/env\[TEMP\] = \/tmp/' /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
+}
+
+# Define a string variable with a value
+StringVal="7.4 8.0 8.1 8.2 8.3"
+
+for PHP_VERSION in $StringVal; do
+ echo ${PHP_VERSION}
+ f_install_php
+done
+
+
+# Chon version mac dinh
+source functions/php/set_default_php
+
+systemctl restart php${PHP_VERSION}-fpm
+
+echo -e "${LIGHT_BLUE}###  CHECK STATUS PHP FPM  #### ${ENDCOLOR}"
+sudo systemctl is-active php${PHP_VERSION}-fpm
+
+# Menu lua chon thoat khoi chuong trinh hay tiep tuc chuong trinh
+echo " "
+source functions/php/99_exit_menu

@@ -1,0 +1,24 @@
+echo " "
+echo -e "${LIGHT_BLUE}####  DANH SACH DATABASE  ##### ${ENDCOLOR}"
+sudo mysql -e "SHOW DATABASES;"
+echo " "
+echo -e "${LIGHT_BLUE}####  DANH SACH USER CUA DATABASE SERVER  ##### ${ENDCOLOR}"
+sudo mysql -e "SELECT host, user, password from mysql.user;"
+echo " "
+read -rp "$(echo -e ${YELLOW}" NHAP ${BLUE}USER${ENDCOLOR} ${YELLOW}DE GAN VAO DATABASE: "$ENDCOLOR)" DB_USER
+echo " "
+read -rp "$(echo -e ${YELLOW}" NHAP TEN ${BLUE}DATABASE${ENDCOLOR} ${YELLOW}DE USER SE DUOC GAN VAO: "$ENDCOLOR)" DB_NAME
+
+
+sudo mysql -e "grant all on $DB_NAME.* to $DB_USER@'localhost' identified by '$DB_PASS';"
+sudo mysql -e "grant all on $DB_NAME.* to $DB_USER@'%' identified by '$DB_PASS'"
+sudo mysql -e "flush privileges;"
+
+echo -e "${LIGHT_BLUE}####  KET QUA USER DUOC GAN VAO DATABASE  ##### ${ENDCOLOR}"
+
+sudo mysql -e "SHOW GRANTS FOR $DB_USER;"
+sudo mysql -e "SHOW GRANTS FOR $DB_USER@localhost;"
+
+# Menu lua chon thoat khoi chuong trinh hay tiep tuc chuong trinh
+echo " "
+source functions/mariadb/99_exit_menu

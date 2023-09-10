@@ -1,0 +1,17 @@
+echo " "
+#XOA DATABASE
+#
+echo -e "${LIGHT_BLUE}####  DANH SACH CAC DATABASE HIEN CO  ##### ${ENDCOLOR}"
+sudo mysql -e "SHOW DATABASES;"
+#
+echo "NHAP TEN DATABASE MUON XOA"
+echo -e "${LIGHT_GREEN}####  XOA DATABASE  ##### ${ENDCOLOR}"
+read -rp "$(echo -e ${YELLOW}" DATABASE NAME: "$ENDCOLOR)" DB_NAME
+#read -rp 'DATABASE NAME: ' DB_NAME
+
+#
+sudo mysql -e "DROP database $DB_NAME;"
+sudo mysql -e "flush privileges;"
+
+# Menu lua chon thoat khoi chuong trinh hay tiep tuc chuong trinh
+source functions/mariadb/99_exit_menu

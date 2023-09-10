@@ -1,0 +1,35 @@
+### Install Enviroment 22.04 ###
+echo "################################"
+echo "### Install Enviroment 22.04 ###"
+echo "################################"
+
+#read -rp 'Nhap dia chi NTP Server: ' ntp_server
+#echo -en "What is your name [ `whoami` ] "
+#whoami
+#read myname
+#sudo runuser -l  root -c 'echo "$myname ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers'
+# cho phep user khong can nhap mat khau khi chay sudo
+#sudo runuser -l  root -c 'echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers'
+
+# Tat Deamons using outdated libraries
+sudo sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/g' /etc/needrestart/needrestart.conf
+# tat Pending kernel upgrade
+sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needrestart/needrestart.conf
+# update va upgrade he dieu hanh
+sudo apt update && sudo apt upgrade -y
+sudo apt autoremove -y
+		
+#install GCC
+sudo apt-get install -y build-essential
+# cac goi can thiet
+sudo apt install -y make gcc build-essential autoconf automake libtool libfuzzy-dev ssdeep gettext pkg-config libcurl4-openssl-dev liblua5.3-dev libpcre3 libpcre3-dev libxml2 libxml2-dev libyajl-dev doxygen libcurl4 libgeoip-dev libssl-dev zlib1g-dev libxslt-dev liblmdb-dev libpcre++-dev libgd-dev 
+
+sudo apt-get install -y wget zip unzip stress tmux moreutils p7zip-full git curl htop unrar nano telnet rsync tcpdump fail2ban net-tools screen geoip-database
+sudo apt-get install -y apt-utils autoconf automake build-essential git libcurl4-openssl-dev libgeoip-dev liblmdb-dev libpcre++-dev libtool libxml2-dev libyajl-dev pkgconf wget zlib1g-dev uuid-dev
+sudo apt-get -y install -y build-essential zlib1g-dev libpcre3 libpcre3-dev unzip uuid-dev openssl libssl-dev zlibc zlib1g libxml2-dev libxslt-dev libgd-dev gcc google-perftools libgoogle-perftools-dev libperl-dev libgeoip1 libgeoip-dev libmodsecurity3
+
+sudo systemctl start fail2ban
+sudo systemctl enable fail2ban
+
+# Menu lua chon thoat khoi chuong trinh hay tiep tuc chuong trinh
+source functions/99_back_main_menu

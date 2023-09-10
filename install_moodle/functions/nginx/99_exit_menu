@@ -1,0 +1,15 @@
+# MARIADB MANAGEMENT
+echo -e "${LIGHT_GREEN}############################################ ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}### BAN CO MUON TIEP TUC CAI DAT KHONG ##### ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}############################################ ${ENDCOLOR}"
+echo -e "${YELLOW}   1)TRO VE MENU CHINH ${ENDCOLOR}"
+echo -e "${YELLOW}   2)TRO VE MENU CAI DAT WEB SERVER NGINX ${ENDCOLOR}"
+echo -e "${YELLOW}   3)THOAT ${ENDCOLOR}"
+
+read -p "$(echo -e ${LIGHT_GREEN}" NHAP SO THU TU :  "$ENDCOLOR)" INSTALL_CHOICE
+case $INSTALL_CHOICE in
+  1) source ././menu.sh;;
+  2) source functions/nginx/00_menu_nginx;;
+  3) exit;;
+  *) echo "invalid option";;
+esac

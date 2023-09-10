@@ -1,0 +1,12 @@
+echo " "
+echo -e "${LIGHT_GREEN}####  DANH SACH USER CUA DATABASE SERVER  ##### ${ENDCOLOR}"
+sudo mysql -e "SELECT host, user, password from mysql.user;"
+
+echo " "
+read -rp "$(echo -e ${YELLOW}" NHAP USERNAME CAN TAO: "$ENDCOLOR)" DB_USER
+read -sp "$(echo -e ${YELLOW}" NHAP PASSWORD CHO USER: "$ENDCOLOR)" DB_PASS
+
+source functions/mariadb/fn_create_user
+
+# Menu lua chon thoat khoi chuong trinh hay tiep tuc chuong trinh
+source functions/mariadb/99_exit_menu

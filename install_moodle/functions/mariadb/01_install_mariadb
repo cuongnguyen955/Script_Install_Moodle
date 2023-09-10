@@ -1,0 +1,14 @@
+### Install MARIADB on Ubuntu 22.04 ###
+echo " "
+echo -e "${LIGHT_GREEN}########################################### ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}#### CAI DAT MARIADB ON UBUNTU 22.04 ###### ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}########################################### ${ENDCOLOR}"
+
+echo -e "${YELLOW} Nhap mat khau muon dat cho user root va sysadmin cua MARIADB ${ENDCOLOR}"
+read -sp "$(echo -e ${YELLOW}" Password root va sysdba cua Mariadb:  "$ENDCOLOR)" DB_ROOT_PASS
+#read -sp 'Password root va sysdba cua Mariadb: ' DB_ROOT_PASS
+
+source functions/mariadb/fn_install_mariadb
+
+# Menu lua chon thoat khoi chuong trinh hay tiep tuc chuong trinh
+source functions/mariadb/99_exit_menu

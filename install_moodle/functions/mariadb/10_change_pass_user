@@ -1,0 +1,15 @@
+echo " "
+echo -e "${LIGHT_GREEN}####  DANH SACH USER CUA DATABASE SERVER  ##### ${ENDCOLOR}"
+sudo mysql -e "SELECT host, user, password from mysql.user;"
+echo " "
+read -rp "$(echo -e ${YELLOW}" NHAP USER CAN DOI MAT KHAU: "$ENDCOLOR)" DB_USER
+read -rp "$(echo -e ${YELLOW}" NHAP MAT KHAU MOI: "$ENDCOLOR)" DB_NEWPASS
+
+# cu phap 
+# mysql -u [database_username] -p [database_password] -D [database_name] -e "<SQL COMMAND>"
+sudo mysql -D mysql -e "ALTER USER '$DB_USER'@'%' IDENTIFIED BY '$DB_NEWPASS';"
+sudo mysql -D mysql -e "ALTER USER '$DB_USER'@'localhost' IDENTIFIED BY '$DB_NEWPASS';"
+sudo mysql -e "flush privileges;"
+
+# Menu lua chon thoat khoi chuong trinh hay tiep tuc chuong trinh
+source functions/mariadb/99_exit_menu

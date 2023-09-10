@@ -1,0 +1,62 @@
+# BACKUP DATABASE MYSQL/MARIADB
+# script nay su dung socket cua mariadb de backup, mac dinh file socket cua mariadb la /var/run/mysqld/mysqld.sock 
+# # mysqldump -u root -p --single-transaction $DATABASES > $PATH_BACKUP/${DATABASES}_`date +"%Y_%m_%d"`.sql
+# mysqldump --socket=/var/run/mysqld/mysqld.sock --single-transaction $DATABASES > $PATH_BACKUP/${DATABASES}_`date +"%Y_%m_%d"`.sql
+PATH_BACKUP=/backup_databases
+
+# Kiem tra thu muc backup_databases da co san chua, neu chua co thi se tao thu muc, neu co roi thi in ra man hinh directory exists
+if [ ! -d "$WEB_ROOT_DIRECTORY" ];
+then
+  mkdir $PATH_BACKUP
+else
+  true
+fi
+# Ket thuc Kiem tra thu muc
+
+# ham backup 1 database theo database name
+create_backup_database () {
+	read -rp "$(echo -e ${YELLOW}" NHAP DATABASE CAN BACKUP: "$ENDCOLOR)" DB_NAME
+	mysqldump --socket=/var/run/mysqld/mysqld.sock $DB_NAME > $PATH_BACKUP/${DB_NAME}_db_`date +"%Y_%m_%d"`.sql
+	# hien thi cac file backup
+	echo " "
+	echo -e "${LIGHT_BLUE}####  VI TRI LU TRU CUA DATABASE VUA BACKUP  ##### ${ENDCOLOR}"
+	printf '%s\n' $PATH_BACKUP/${DB_NAME}_db_`date +"%Y_%m_%d"`.sql
+}
+# end Ham backup 1 database theo database name
+
+# ham backup 1 database theo database name
+create_backup_all_database () {
+	for DATABASES in $(mysql -e 'show databases' -s --skip-column-names); do
+	  mysqldump --socket=/var/run/mysqld/mysqld.sock --single-transaction $DATABASES > $PATH_BACKUP/${DATABASES}_`date +"%Y_%m_%d"`.sql
+	  # tham so --socket=/var/run/mysqld/mysqld.sock thuc thi mysql theo socket
+	  # tham so --single-transaction de backup database information_schema
+    done
+	
+	# hien thi cac file backup
+	echo " "
+	echo -e "${LIGHT_BLUE}####  VI TRI LU TRU CUA CAC DATABASE VUA BACKUP  ##### ${ENDCOLOR}"
+	printf '%s\n' $PATH_BACKUP/*`date +"%Y_%m_%d"`.sql
+}
+# end am backup 1 database theo database name
+
+echo " "
+echo -e "${LIGHT_BLUE}####  CAC DATABASE DANG CO  ##### ${ENDCOLOR}"
+sudo mysql -e "SHOW DATABASES;"
+
+# Lua chon backup toan bo database hay chi mot database
+echo " "
+echo -e "${LIGHT_GREEN}###  CHON BACKUP 1 DATABASE HAY TOAN BO DATABASE  ### ${ENDCOLOR}"
+echo -e "${YELLOW}   1) BACKUP TOAN BO DATABASE HIEN CO ${ENDCOLOR}"
+echo -e "${YELLOW}   2) BACKUP MOT DATABASE ${ENDCOLOR}"
+read -p "$(echo -e ${LIGHT_GREEN}" NHAP SO THU TU CUA THAO TAC CAN DUNG:  "$ENDCOLOR)" INSTALL_CHOICE
+case $INSTALL_CHOICE in
+  1) create_backup_all_database;;
+  2) create_backup_database;;
+  *) echo "invalid option";;
+esac
+# ket thuc menu chon loai backup
+
+
+# Menu lua chon thoat khoi chuong trinh hay tiep tuc chuong trinh
+echo " "
+source functions/mariadb/99_exit_menu

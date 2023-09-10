@@ -1,0 +1,50 @@
+echo -e "${LIGHT_GREEN}######################### ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}####  TAO DATABASE ###### ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}######################### ${ENDCOLOR}"
+echo " "
+
+# ham tao database
+create_database () {
+	echo -e "${LIGHT_GREEN} ####  NHAP CAC THONG TIN DATABASE NAME, USER VA PASSWORD  #### ${ENDCOLOR}"
+	#read -rp 'DATABASE NAME: ' DB_NAME
+	read -rp "$(echo -e ${YELLOW}" DATABASE NAME: "$ENDCOLOR)" DB_NAME
+	echo " "
+	#read -rp 'DATABASE USER: ' DB_USER	
+	read -rp "$(echo -e ${YELLOW}" DATABASE USER: "$ENDCOLOR)" DB_USER	
+	echo " "
+	#read -sp 'DATABASE PASSS: ' DB_PASS
+	read -sp "$(echo -e ${YELLOW}" Nhap DATABASE PASS: "$ENDCOLOR)" DB_PASS		
+	echo " "
+	# Goi ham de tao DATABASE theo cac tham so o tren
+	source functions/mariadb/fn_create_database
+}
+
+
+# Kiểm tra service mariadb 
+# nếu dich vu is active thi khong cai dat mariadb ma goi function tao database
+# neu dich vu inactive thi cai dat mariadb sau do goi ham tao database
+service_name="mariadb"
+
+if systemctl is-active --quiet "$service_name.service" ; then
+  echo -e "${YELLOW} $service_name dang hoat dong ${ENDCOLOR}"
+  create_database
+else
+  echo -e "${YELLOW} $service_name is starting..... ${ENDCOLOR}"
+  systemctl start mariadb
+  create_database  
+fi
+
+
+
+### Kiem tra lai database, user vua tao
+echo -e "${LIGHT_BLUE}####  CHECK STATUS MARIADB  ##### ${ENDCOLOR}"
+sudo systemctl is-active mariadb
+echo " "
+echo -e "${LIGHT_BLUE}####  SHOW DATABASES  ##### ${ENDCOLOR}"
+sudo mysql -e "SHOW DATABASES;"
+echo " "
+echo -e "${LIGHT_BLUE}####  HECK USERS SQL  ##### ${ENDCOLOR}"
+sudo mysql -e "SELECT host, user, password from mysql.user;"
+echo " "
+# Menu lua chon thoat khoi chuong trinh hay tiep tuc chuong trinh
+source functions/mariadb/99_exit_menu

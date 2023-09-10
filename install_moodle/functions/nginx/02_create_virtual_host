@@ -1,0 +1,89 @@
+# gan bien cho thu mục root cua web server
+WEB_ROOT_DIRECTORY=/var/www
+
+# Kiem tra WEB_ROOT_DIRECTORY da co san chua, neu chua co thi se tao thu muc, neu co roi thi in ra man hinh directory exists
+if [ ! -d "$WEB_ROOT_DIRECTORY" ];
+then
+	mkdir $WEB_ROOT_DIRECTORY
+else
+	echo "$WEB_ROOT_DIRECTORY directory exists."
+fi
+
+# Thiet lap ten mien
+echo -e "${LIGHT_GREEN} #### KHAI BAO TEN MIEN #### ${ENDCOLOR}"
+read -rp "$(echo -e ${YELLOW}" NHAP DOMAIN: "$ENDCOLOR)" DOMAIN_NAME
+
+# Thiet lap version php cho website
+# # CHON VERSION PHP
+echo -e "${LIGHT_GREEN} ### CHON VERSION PHP ##### ${ENDCOLOR}"
+echo -e "${YELLOW}   1) PHP 7.4 ${ENDCOLOR}"
+echo -e "${YELLOW}   2) PHP 8.0 ${ENDCOLOR}"
+echo -e "${YELLOW}   3) PHP 8.1 ${ENDCOLOR}"
+echo -e "${YELLOW}   4) PHP 8.2 ${ENDCOLOR}"
+echo -e "${YELLOW}   5) PHP 8.3 ${ENDCOLOR}"
+read -p "$(echo -e ${LIGHT_GREEN}" NHAP SO THU TU PHIEN BAN PHP:  "$ENDCOLOR)" INSTALL_CHOICE
+case $INSTALL_CHOICE in
+	  1) PHP_VERSION=7.4;;
+	  2) PHP_VERSION=8.0;;
+	  3) PHP_VERSION=8.1;;
+	  4) PHP_VERSION=8.2;;
+	  5) PHP_VERSION=8.3;;
+	  *) echo "invalid option";;
+	esac
+
+echo "$WEB_ROOT_DIRECTORY"
+echo "$DOMAIN_NAME"
+	# tao thu muc cho domain
+mkdir $WEB_ROOT_DIRECTORY/$DOMAIN_NAME
+chown -R www-data.www-data $WEB_ROOT_DIRECTORY/$DOMAIN_NAME
+chmod -R 755 $WEB_ROOT_DIRECTORY/$DOMAIN_NAME
+mkdir /var/log/nginx/$DOMAIN_NAME
+chown -R www-data.www-data /var/log/nginx/
+
+
+# tao file config cho domain
+echo "
+server {
+	listen 80;
+	listen [::]:80;
+	root $WEB_ROOT_DIRECTORY/$DOMAIN_NAME/moodle/;
+	
+	index  index.php index.html index.htm;
+	server_name  $DOMAIN_NAME;
+	
+	access_log /var/log/nginx/$DOMAIN_NAME/access.log vhost;
+	error_log /var/log/nginx/$DOMAIN_NAME/error.log;
+
+	set_real_ip_from 10.1.18.18;
+	set_real_ip_from 10.1.18.19;
+
+	client_max_body_size 100M;
+	autoindex off;
+	location / {
+		try_files \$uri \$uri/ =404;
+	}
+	location /dataroot/ {
+	  internal;
+	  alias /$DOMAIN_NAME/moodledata/;
+	}
+
+	location ~ [^/].php(/|$) {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass unix:/run/php/php${PHP_VERSION}-fpm.sock;
+		fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+		include fastcgi_params;
+	}
+}
+" > /etc/nginx/conf.d/$DOMAIN_NAME.conf
+
+# Reload NGINX
+systemctl reload nginx
+
+# khoi dong lai Apache
+sudo systemctl restart nginx
+
+echo -e "${LIGHT_GREEN}####  KIEM TRA TRANG THAI DICH VU NGINX ###### ${ENDCOLOR}"
+sudo systemctl is-active nginx
+
+# Thoat ve menu Nginx
+source functions/nginx/99_exit_menu

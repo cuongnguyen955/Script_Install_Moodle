@@ -1,0 +1,25 @@
+echo " "
+echo -e "${LIGHT_BLUE}####  DANH SACH USER CUA DATABASE SERVER  ##### ${ENDCOLOR}"
+sudo mysql -e "SELECT host, user, password from mysql.user;"
+
+echo " "
+echo -e "${LIGHT_GREEN}####  KIEM TRA USER DUOC GAN QUYEN TRUY CAP VAO DATABASE NAO  ##### ${ENDCOLOR}"
+read -rp "$(echo -e ${YELLOW}" NHAP USER NAME: "$ENDCOLOR)" DB_USER
+read -sp "$(echo -e ${YELLOW}" NHAP PASSWORD CUA USER: "$ENDCOLOR)" DB_PASS
+
+mysql -u $DB_USER -p$DB_PASS -e "show databases"
+
+# goi ham thoat ve menu exit
+source functions/mariadb/99_exit_menu
+
+# mysql --socket=/var/run/mysqld/mysqld.sock -e "SELECT User, db, host FROM mysql.db WHERE host LIKE 'localhost';"   >>> lenh nay dung de list ma khong can nhap user mat khau, ket qua lenh nhu duoi
+#+------------------+-----------------+-----------+
+#| User             | db              | host      |
+#+------------------+-----------------+-----------+
+#| site1            | site1           | localhost |
+#| user1            | site1           | localhost |
+#| site2            | site2           | localhost |
+#| user111111111111 | user11111111111 | localhost |
+#+------------------+-----------------+-----------+
+
+#  mysql --socket=/var/run/mysqld/mysqld.sock -e "SELECT User, db, host FROM mysql.db;"      >>>> lenh nay hien thi tat ca user ke ca user remote ky ty %

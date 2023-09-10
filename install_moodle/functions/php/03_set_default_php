@@ -1,0 +1,4 @@
+#	CHON PHIEN BAN PHP MAC DINH
+echo " "
+echo -e "${LIGHT_GREEN}### CHON PHIEN BAN PHP MAC DINH ##### ${ENDCOLOR}"
+sudo update-alternatives --config php

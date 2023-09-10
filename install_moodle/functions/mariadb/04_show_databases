@@ -1,0 +1,6 @@
+echo " "
+echo -e "${LIGHT_BLUE}####  CAC DATABASE DANG CO  ##### ${ENDCOLOR}"
+sudo mysql -e "SHOW DATABASES;"
+
+# Menu lua chon thoat khoi chuong trinh hay tiep tuc chuong trinh
+source functions/mariadb/99_exit_menu

@@ -1,0 +1,6 @@
+# HAM TAO DATABASE
+# CAC THAM SO USER, PASSWORD, DB NAME, DUOC LAY TU BIEN CUA CHUONG TRINH DUA VAO
+sudo mysql -e "create database $DB_NAME default character set utf8;"
+sudo mysql -e "grant all on $DB_NAME.* to $DB_USER@'localhost' identified by '$DB_PASS';"
+sudo mysql -e "grant all on $DB_NAME.* to $DB_USER@'%' identified by '$DB_PASS'"
+sudo mysql -e "flush privileges;"

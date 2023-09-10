@@ -1,0 +1,47 @@
+#!/bin/bash
+# khai cac bien can thiet
+BACKUP_DIR=/opt/backup
+WEB_ROOT_DIRECTORY=/var/www
+TIMESTAMP=$(date +"%Y-%m-%d_%Hh%M")
+
+fn_backup_moodle (){
+  # khai cac bien can thiet
+  BACKUP_DIR_SITE=${BACKUP_DIR}/${DOMAINNAMES}
+  BACKUP_FILE=${DOMAINNAMES}_${TIMESTAMP}
+  BACKUP_SITE=${WEB_ROOT_DIRECTORY}/${DOMAINNAMES}
+  echo ${BACKUP_DIR_SITE}
+  echo ${DOMAINNAMES}
+  echo ${BACKUP_FILE}
+  echo ${BACKUP_SITE}
+  mkdir -p ${BACKUP_DIR_SITE}
+  #cd ${BACKUP_DIR}
+  #tar -cvzf ${DOMAINNAMES}/${BACKUP_FILE}_.tar.gz -c ${BACKUP_SITE} # ngat tam chay thu cac lenh khac
+  tar -C ${WEB_ROOT_DIRECTORY} -cvf ${BACKUP_FILE}.tar.gz ${DOMAINNAMES}
+  
+  # BACKUP DATABASE
+  # lay database name cua moodle tu file config
+  DB_NAME=$(cat /var/www/${DOMAINNAMES}/moodle/config.php | grep dbname | awk '{print $3}' |perl -pe "s/[\'\;]//g")
+  mysqldump --socket=/var/run/mysqld/mysqld.sock ${DB_NAME} > ${BACKUP_FILE}.sql
+  
+  mv ${BACKUP_FILE}.* ${BACKUP_DIR_SITE}
+}
+
+readarray -t lines < <(cat /etc/nginx/conf.d/*.conf | grep server_name | awk '{print $2}' | perl -pe "s/[\;]//g")
+
+# TAO MENU TU STDOUT CUA MANG readarray
+echo -e "${LIGHT_GREEN}################################################ ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}###  NHAP SO THU TU CUA WEBSITE MUON BACKUP  ### ${ENDCOLOR}"
+echo -e "${LIGHT_GREEN}################################################ ${ENDCOLOR}"
+select choice in "${lines[@]}"; do
+  [[ -n $choice ]] || { echo "Nhap so bi sai, nhap lai." >&2; continue; }
+  break # valid choice was made; exit prompt.
+done
+
+# dua dau ra cua select o tren vao bien DOMAINNAMES
+read -r DOMAINNAMES <<<"$choice"
+
+# goi function backup moodle
+fn_backup_moodle
+
+echo -e "${LIGHT_GREEN}###  FILE BACKUP TRONG THU MUC: ${LIGHT_YELLOW}${BACKUP_DIR_SITE}${ENDCOLOR} ${LIGHT_GREEN}###${ENDCOLOR}"
+ls -1s --block-size=M ${BACKUP_DIR_SITE} | tail -2
