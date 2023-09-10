@@ -4,6 +4,12 @@
 # Phone: +84905014328
 # Script duoc viet tren Ubuntu 22.04
 
+# Sử dụng Script
+download và giải nén
+di chuyển vào thư mục đã giải nén
+chmod +x menu.sh
+./menu.sh
+
 ###########################################################
 ###  CAI DAT MOI TRUONG VA CAC DICH VU CHO MAY CHU MOI  ###
 ###########################################################
