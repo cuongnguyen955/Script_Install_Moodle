@@ -13,7 +13,7 @@
    9) BACKUP WEBSITE
    99) EXIT MENU
 
-NHAP SO THU TU CUA DICH VU MUON CAI DAT:  3
+
 ############################################
 ### CHON THAO TAC CAN DUNG VOI MARIADB #####
 ############################################
@@ -28,3 +28,6 @@ NHAP SO THU TU CUA DICH VU MUON CAI DAT:  3
    9) XOA USER DATABASE
    10) DOI MAT KHAU USER DATABASE
    99) EXIT MENU
+....
+....
+....
