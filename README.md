@@ -32,3 +32,4 @@ Chạy scrip ở cửa sổ terminal
 
 ./menu.sh
 
+video hướng dẫn cài đặt : https://youtu.be/wE8uLeHfc7w
