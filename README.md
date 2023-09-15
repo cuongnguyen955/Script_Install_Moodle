@@ -5,40 +5,19 @@
 # Phone: +84905014328
 # Script duoc viet tren Ubuntu 22.04
 
-# Sử dụng Script
-download và giải nén
-di chuyển vào thư mục đã giải nén
+YÊU CẦU CẦN THIẾT:
+Máy chủ cài đặt hệ điều hành Ubuntu 22.04
+Tên miền chuẩn bị sẵn cho trang Moodle (tên miền là địa chỉ url dùng để truy cập vào trang moodle ví dụ : moodle1.vn lms.ued.vn)
+
+CÀI ĐẶT:
+Để file cài đặt thực hiện được yêu cầu người dùng phải có quyền root, chuyển sang quyền root bằng lệnh dưới
+sudo -i
+Nhập lệnh dưới vào cửa sổ terminal của máy chủ:
+git clone https://github.com/cuongnguyen955/Script_Install_Moodle.git
+Di chuyển vào thư mục Script_Install_Moodle
+cd Script_Install_Moodle
+Nhập lệnh dưới 
 chmod +x menu.sh
+Chạy scrip ở cửa sổ terminal
 ./menu.sh
-
-###########################################################
-###  CAI DAT MOI TRUONG VA CAC DICH VU CHO MAY CHU MOI  ###
-###########################################################
-   1) CAI DAT MOI TRUONG
-   2) CAI DAT NTP
-   3) CAI DAT VA QUAN LY DATABASE
-   4) CAI DAT PHP
-   5) CAI DAT NGINX
-###  TU 1-> 5 CHI CAI DAT CHO MAY CHU MOI  ###
-   6) CAI DAT MOODLE TREN NEN TANG NGINX
-   9) BACKUP WEBSITE
-   99) EXIT MENU
-
-
-############################################
-### CHON THAO TAC CAN DUNG VOI MARIADB #####
-############################################
-   1) CAI DAT MARIADB
-   2) TAO DATABASE va USER TUONG UNG
-   3) XOA DATABASE
-   4) KIEM TRA CAC DATABASE DANG CO
-   5) KIEM TRA CAC USER SO HUU DATABASE NAO
-   6) LIET KE CAC USER TRONG DATABASE
-   7) TAO USER TRONG DATABASE
-   8) GAN USER VAO DATABASE
-   9) XOA USER DATABASE
-   10) DOI MAT KHAU USER DATABASE
-   99) EXIT MENU
-....
-....
-....
+![image](https://github.com/cuongnguyen955/Script_Install_Moodle/assets/129468419/b7ddfce9-8139-4bd2-a075-5a70072c9b9f)
