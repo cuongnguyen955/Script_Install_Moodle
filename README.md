@@ -16,7 +16,9 @@ Tên miền chuẩn bị sẵn cho trang Moodle (tên miền là địa chỉ ur
 
 # CÀI ĐẶT:
 Để file cài đặt thực hiện được yêu cầu người dùng phải có quyền root, chuyển sang quyền root bằng lệnh dưới
+
 sudo -i
+
 Nhập lệnh dưới vào cửa sổ terminal của máy chủ:
 
 git clone https://github.com/cuongnguyen955/Script_Install_Moodle.git
