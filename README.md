@@ -8,6 +8,7 @@ Email: ngxcuongdng@hotmail.com
 
 Phone: +84905014328
 
+web: https://nxcuong.ued.vn
 
 # YÊU CẦU CẦN THIẾT:
 Máy chủ cài đặt hệ điều hành Ubuntu 22.04
