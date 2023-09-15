@@ -1,6 +1,7 @@
 # Script_Install_Moodle
 # Script tự động cài đặt moodle các version cùng các tiện ích cần thiết hỗ trợ quá trinh cài đặt triển khai moodle cho các giáo viên, it của trường học
-# Email: nxcuong@ued.udn.vn; ngxcuongdng@hotmail.com
+# Email: nxcuong@ued.udn.vn ngxcuongdng@hotmail.com
+# Email: ngxcuongdng@hotmail.com
 # Phone: +84905014328
 # Script duoc viet tren Ubuntu 22.04
 
