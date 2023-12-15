@@ -18,6 +18,10 @@ sed -i "s/#\$nrconf{kernelhints} = -1;/\$nrconf{kernelhints} = -1;/g" /etc/needr
 # update va upgrade he dieu hanh
 sudo apt update && sudo apt upgrade -y
 sudo apt autoremove -y
+
+# fix loi netplan apply
+apt-get install openvswitch-switch
+chmod 600 /etc/netplan/00-installer-config.yaml
 		
 #install GCC
 sudo apt-get install -y build-essential
